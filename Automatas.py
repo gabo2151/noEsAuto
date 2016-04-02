@@ -15,6 +15,7 @@ def menuConsola():
 class Estado:
 	def __init__(self, nombre):
 		self.nombre = nombre
+		self.tipo = "regular"
 
 if __name__ == "__main__":
 	print "-----------Teoria de Automatas--------------\nSimulador de Automatas Finitos Deterministas\nAutores: Elliot Ide, Gabriel Galilea, Javier Godoy"
@@ -36,8 +37,17 @@ if __name__ == "__main__":
 			if opc == 0:
 				break
 
+			def encuentraPos(lista,x): #metodo para buscar en una lista, el elemento x sabiendo que esta en la lista y devolver el indice
+				c = 0
+				for i in range(len(lista)):
+					if lista[i] == x:
+						return c
+					else: c = c + 1
+
+
 			#variables
 			listaestados = [] #lista de objetos tipo estado
+			listanombres = []
 
 
 			n = input("Ingrese numero de estados (Debe ser mayor a 0): ")
@@ -55,6 +65,31 @@ if __name__ == "__main__":
 			#demostracion
 			for i in range(n):
 				print listaestados[i].nombre
+
+			talvez = raw_input("Desea que el estado "+ listaestados[0].nombre+" sea el estado inicial (si o no): ")
+			while talvez !="si" and talvez != "no":
+				talvez = raw_input("Desea que el estado "+ listaestados[0].nombre+" sea el estado inicial (si o no): ")
+			
+			if talvez == "si":
+				listaestados[0].tipo = "inicial"
+				print listaestados[0].tipo
+
+			else:
+				for i in range(n):
+					listanombres.append(listaestados[i].nombre)
+				ini = raw_input("Ingrese nombre estado inicial: ")
+				while ini not in listanombres:
+					ini = raw_input("Ingrese nombre estado inicial: ")
+
+				pos = encuentraPos(listanombres,ini)
+				print pos
+
+				listaestados[pos].tipo ="inicial"
+				print listaestados[pos].tipo
+
+
+
+
 
 	elif selGUI == 1:
 		print "Iniciando GUI..."
