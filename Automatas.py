@@ -16,6 +16,12 @@ class Estado:
 	def __init__(self, nombre):
 		self.nombre = nombre
 		self.tipo = "regular"
+		self.indices = {}
+
+	def addIndice(self, caracter, direccion):
+		# La direccion debiese de ser el numero del indice
+		self.indices(caracter) = direccion
+
 
 if __name__ == "__main__":
 	print "-----------Teoria de Automatas--------------\nSimulador de Automatas Finitos Deterministas\nAutores: Elliot Ide, Gabriel Galilea, Javier Godoy"
@@ -29,15 +35,18 @@ if __name__ == "__main__":
 			selGUI = int(selGUI)
 			break
 
+	# Inicio de modo consola
 	if selGUI == 0:
-		while True:
+		while True: #Loop infinito para ejecutar el programa sin terminarlo
 			menuConsola()
 			opc = input("Elija una opcion: ")
 
 			if opc == 0:
-				break
+				break #Termina el while
 
-			def encuentraPos(lista,x): #metodo para buscar en una lista, el elemento x sabiendo que esta en la lista y devolver el indice
+			# Metodo para buscar en una lista, el elemento x sabiendo que esta en la
+			# lista y devolver el indice
+			def encuentraPos(lista,x):
 				c = 0
 				for i in range(len(lista)):
 					if lista[i] == x:
@@ -49,16 +58,17 @@ if __name__ == "__main__":
 			listaestados = [] #lista de objetos tipo estado
 			listanombres = []
 
-
+			# Numero de estados/nodos
 			n = input("Ingrese numero de estados (Debe ser mayor a 0): ")
 			while n<=0:
 				n=input("Ingrese numero de estados (Debe ser mayor a 0): ")
 
-
+			# Elegir la letra de los estados, puede ser q, o, p, etc...
 			x = raw_input("Ingrese simbolo de largo 1 que represente a todos sus estados (Ej: q => q0, q1, ..., qn): ")
 			while(len(x)!=1):
 				x = raw_input("Ingrese simbolo de largo 1 que represente a todos sus estados (Ej: q => q0, q1, ..., qn): ")
 
+			# Crea los estados y los almacena en la lista
 			for i in range(n):
 				listaestados.append(Estado(x+str(i)))
 
@@ -90,7 +100,7 @@ if __name__ == "__main__":
 
 
 
-
+	# Inicio del modo GUI
 	elif selGUI == 1:
 		print "Iniciando GUI..."
 
