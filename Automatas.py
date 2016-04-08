@@ -53,36 +53,54 @@ if __name__ == "__main__":
 	if selGUI == 0:
 		# Metodo para buscar en una lista, el elemento x sabiendo que esta en la
 		# lista y devolver el indice
-		def encuentraPos(lista,x):
-			c = 0
+		def muestraNombres(lista):
 			for i in range(len(lista)):
-				if lista[i] == x:
-					return c
-				else: c = c + 1
+				print  lista[i].nombre
+
+
+		def validaEstado(nombreestado):
+			for i in range(len(listaestados)):
+				if listaestados[i].nombre == nombreestado:
+					return True
+					break
+				return False
 
 		#variables
 		listaestados = [] #lista de objetos tipo estado
-		listanombres = []
+		l = []
 
-		# Numero de estados/nodos
-		n = input("Ingrese numero de estados (Debe ser mayor a 0): ")
-		while n<=0:
-			n=input("Ingrese numero de estados (Debe ser mayor a 0): ")
+		#Solicitando nombre estado inicial
+		estadoinicial = raw_input("Ingrese estado inicial: ")
+		while type(estadoinicial) != str:
+			estadoinicial = raw_input("Ingrese estado inicial: ")
+		listaestados.append(Estado(estadoinicial))
 
-		# Elegir la letra de los estados, puede ser q, o, p, etc...
-		x = raw_input("Ingrese simbolo de largo 1 que represente a todos sus estados (Ej: q => q0, q1, ..., qn): ")
-		while(len(x)!=1):
-			x = raw_input("Ingrese simbolo de largo 1 que represente a todos sus estados (Ej: q => q0, q1, ..., qn): ")
+		listaestados[0].inicial=True
 
-		# Crea los estados y los almacena en la lista
-		for i in range(n):
-			listaestados.append(Estado(x+str(i)))
+		#Solicitando las transiciones
+		trans = raw_input("Ingrese transicion de la forma estado simbolo estado, ej q0 a q1: ")
+		while trans != "":
+			l = trans.split()
+			if validaEstado(l[0]): #valido si existe el estado a partir del nombre
+				print "El estado ya existe, no es necesario crear uno"
+				listaestados[0].indices[l[1]]=l[2]
+			else: #si el estado no existe, lo creo, y agrego el indice
+				listaestados.append(Estado(l[0]))
+				listaestados[0].indices[l[1]]=l[2]
 
-		#demostracion
-		for i in range(n):
-			print listaestados[i].nombre
-			
-		listaestados[0].inicial = True
+			if validaEstado(l[2]):#para el estado de llegada a traves de la transicion no es necesario crearle un indice ni nada :captainobvious:
+				print validaEstado(l[2])
+				print "El estado ya existe, no es necesario crear uno"
+
+			else:
+				listaestados.append(Estado(l[2]))
+
+			l =[]
+			muestraNombres(listaestados) #muestro los estados
+			print listaestados[0].indices #muestro los indices
+			trans = raw_input("Ingrese transicion de la forma estado simbolo estado, ej q0 a q1: ")
+
+
 
 		pause()
 
@@ -114,14 +132,14 @@ if __name__ == "__main__":
 				print listaestados[numE].data()
 				print "Edicion\n"
 				
-				# Cambiar si es estado final o no
+				""" Cambiar si es estado final o no
 				talvez = raw_input("Desea que el estado "+ listaestados[numE].nombre+" sea estado final (si o no): ")
 				while talvez !="si" and talvez != "no":
 					talvez = raw_input("Desea que el estado "+ listaestados[numE].nombre+" sea estado final (si o no): ")
 				if talvez == "si":
 					listaestados[numE].final = True
 				else:
-					listaestados[numE].final = False
+					listaestados[numE].final = False"""
 
 				alfa = raw_input("Ingrese simbolo del alfabeto: ")
 				dirr = raw_input("Ingrese el numero del estado al cual se conecta\ncon el simbolo: ")
