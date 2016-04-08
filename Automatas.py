@@ -118,7 +118,7 @@ if __name__ == "__main__":
 				talvez = raw_input("Desea que el estado "+ listaestados[numE].nombre+" sea estado final (si o no): ")
 				while talvez !="si" and talvez != "no":
 					talvez = raw_input("Desea que el estado "+ listaestados[numE].nombre+" sea estado final (si o no): ")
-				if talvez = "si":
+				if talvez == "si":
 					listaestados[numE].final = True
 				else:
 					listaestados[numE].final = False
