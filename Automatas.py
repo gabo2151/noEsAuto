@@ -9,19 +9,24 @@ simular cualquier AFD"""
 # Debe ser autoexplicativo
 
 import os
+import string
 
+# Definir una funcion de pausa... por comodidad
 def pause():
 	raw_input("Presione ENTER para continuar...")
 
+# Una funcion de interfaz de consola para liberar de espacio en medio del codigo
 def menuConsola():
-	print "==MENU========================"
-	print "[1] Editar un estado"
+	print "==MENU==================================="
+	print "[1] Imprime nodos y conecciones actuales"
+	print "[2] Editar un estado"
 	print "[0] Salir"
 
 class Estado:
 	def __init__(self, nombre):
 		self.nombre = nombre
-		self.tipo = "regular"
+		self.inicial = False
+		self.final = False
 		self.indices = {}
 
 	# Sirve para editar tambien***
@@ -76,47 +81,51 @@ if __name__ == "__main__":
 		#demostracion
 		for i in range(n):
 			print listaestados[i].nombre
-
-		talvez = raw_input("Desea que el estado "+ listaestados[0].nombre+" sea el estado inicial (si o no): ")
-		while talvez !="si" and talvez != "no":
-			talvez = raw_input("Desea que el estado "+ listaestados[0].nombre+" sea el estado inicial (si o no): ")
 			
-		if talvez == "si":
-			listaestados[0].tipo = "inicial"
-			print listaestados[0].tipo
+		listaestados[0].inicial = True
 
-		else:
-			for i in range(n):
-				listanombres.append(listaestados[i].nombre)
-			ini = raw_input("Ingrese nombre estado inicial: ")
-			while ini not in listanombres:
-				ini = raw_input("Ingrese nombre estado inicial: ")
-
-			pos = encuentraPos(listanombres,ini)
-			print pos
-
-			listaestados[pos].tipo ="inicial"
-			print listaestados[pos].tipo
+		pause()
 
 		# INICIO DE LA INTERFAZ EN CONSOLA
 		while True: #Loop infinito para ejecutar el programa sin terminarlo
 			os.system('cls' if os.name == 'nt' else 'clear')
 			menuConsola()
 			opc = input("Elija una opcion: ")
-			print "==============================\n"
+			print "=========================================\n"
 
 			if opc == 0: # Termina el programa
 				break #Termina el while
 
-			elif opc == 1: # Edita estados
+			elif opc == 1:
+				for i in listaestados:
+					print "Nombre: %s\nIndices: " % i.nombre
+					print i.indices
+
+				pause()
+
+			elif opc == 2: # Edita estados
 				est = ""
 				for i in range(n):
 					est += listaestados[i].nombre + " "
 				print est
 				print "Seleccione el estado que desee editar (por su numero)"
-				print listaestados[int(raw_input("Num: "))].data()
-
+				numE = int(raw_input("Num: "))
+				print "Estado actual del estado:"
+				print listaestados[numE].data()
+				print "Edicion\n"
 				
+				# Cambiar si es estado final o no
+				talvez = raw_input("Desea que el estado "+ listaestados[numE].nombre+" sea estado final (si o no): ")
+				while talvez !="si" and talvez != "no":
+					talvez = raw_input("Desea que el estado "+ listaestados[numE].nombre+" sea estado final (si o no): ")
+				if talvez = "si":
+					listaestados[numE].final = True
+				else:
+					listaestados[numE].final = False
+
+				alfa = raw_input("Ingrese simbolo del alfabeto: ")
+				dirr = raw_input("Ingrese el numero del estado al cual se conecta\ncon el simbolo: ")
+				listaestados[numE].data()[alfa] = dirr
 
 				pause()
 
