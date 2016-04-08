@@ -20,6 +20,7 @@ def menuConsola():
 	print "==MENU==================================="
 	print "[1] Imprime nodos y conecciones actuales"
 	print "[2] Editar un estado"
+	print "[3] Verificar palabra"
 	print "[0] Salir"
 
 class Estado:
@@ -144,6 +145,29 @@ if __name__ == "__main__":
 				alfa = raw_input("Ingrese simbolo del alfabeto: ")
 				dirr = raw_input("Ingrese el numero del estado al cual se conecta\ncon el simbolo: ")
 				listaestados[numE].data()[alfa] = dirr
+
+				pause()
+
+			elif opc == 3: # Probar palabra
+				eA = 0 #Estado actual
+				cuenta = 0
+				testWord = raw_input("Ingrese la palabra a analizar\n=> :")
+				for key in testWord:
+					if key in listaestados[eA].indices:
+						eA = int( listaestados[eA].indices[key][1] )
+						cuenta +=1
+					else:
+						print "La palabra no pertenece a este lenguaje"
+						break
+
+					if cuenta == len(listaestados)-1:
+						if listaestados[eA].final:
+							print "La palabra pertenece al lenguaje"
+							break
+						else:
+							print "La palabra no pertenece a este lenguaje"
+							break
+
 
 				pause()
 
