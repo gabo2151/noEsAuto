@@ -1,13 +1,3 @@
-"""La tarea consiste en diseniar y construir un programa computacional capaz de
-simular cualquier AFD"""
-# La entrada al programa consiste en: estado inicial, estados finales
-# transiciones del AFD, palabra de entrada
-#
-# La salida un mensaje indicando si pertenece o no al lenguaje
-#
-# El programa debe poder analizar muchas palabras de entrada
-# Debe ser autoexplicativo
-
 import os
 import string
 
@@ -52,11 +42,12 @@ if __name__ == "__main__":
 
 	# Inicio de modo consola
 	if selGUI == 0:
-		# Metodo para buscar en una lista, el elemento x sabiendo que esta en la
-		# lista y devolver el indice
-		def muestraNombres(lista):
-			for i in range(len(lista)):
-				print  lista[i].nombre
+
+		#Funciones
+		def muestraAtributos():
+			for i in range(len(listaestados)):
+				print listaestados[i].nombre
+				print listaestados[i].indices
 
 
 		def validaEstado(nombreestado):
@@ -64,13 +55,26 @@ if __name__ == "__main__":
 				if listaestados[i].nombre == nombreestado:
 					return True
 					break
+			return False
+
+		def validaTrans(pos,clave):
+			if clave in listaestados[pos].indices:
+				return True
+			else:
 				return False
 
-		#variables
+		def devuelvePos(nombreestado):
+			for i in range(len(listaestados)):
+				if listaestados[i].nombre == nombreestado:
+					return i
+					break
+
+		#Variables
 		listaestados = [] #lista de objetos tipo estado
 		l = []
+		c = 0
 
-		#Solicitando nombre estado inicial
+		#Estado inicial
 		estadoinicial = raw_input("Ingrese estado inicial: ")
 		while type(estadoinicial) != str:
 			estadoinicial = raw_input("Ingrese estado inicial: ")
@@ -78,27 +82,33 @@ if __name__ == "__main__":
 
 		listaestados[0].inicial=True
 
-		#Solicitando las transiciones
-		trans = raw_input("Ingrese transicion de la forma estado simbolo estado, ej q0 a q1: ")
+		#Transiciones
+		trans = raw_input("Ingrese transicion de la forma estado simbolo estado, Ej: q0 a q1: ")
 		while trans != "":
 			l = trans.split()
-			if validaEstado(l[0]): #valido si existe el estado a partir del nombre
-				print "El estado ya existe, no es necesario crear uno"
-				listaestados[0].indices[l[1]]=l[2]
-			else: #si el estado no existe, lo creo, y agrego el indice
-				listaestados.append(Estado(l[0]))
-				listaestados[0].indices[l[1]]=l[2]
+			#primer estado en la transicion
+			if validaEstado(l[0]): #si el estado existe, solo agrego su transicion al diccionario indices
+				print "El estado ya existe"
+				c = devuelvePos(l[0])
+				if validaTrans(c,l[1]):
+					print "Ya existe una transicion asociada a este simbolo"
+				else:
+					listaestados[c].indices[l[1]]=l[2]
 
-			if validaEstado(l[2]):#para el estado de llegada a traves de la transicion no es necesario crearle un indice ni nada :captainobvious:
-				print validaEstado(l[2])
-				print "El estado ya existe, no es necesario crear uno"
+			else: #si el estado no existe, lo creo, y luego agrego la transicion
+				listaestados.append(Estado(l[0]))
+				c = devuelvePos(l[0])
+				listaestados[c].indices[l[1]]=l[2]
+
+			#segundo estado en la transicion
+			if validaEstado(l[2]):
+				print "El estado ya existe"
 
 			else:
 				listaestados.append(Estado(l[2]))
 
 			l =[]
-			muestraNombres(listaestados) #muestro los estados
-			print listaestados[0].indices #muestro los indices
+			muestraAtributos()
 			trans = raw_input("Ingrese transicion de la forma estado simbolo estado, ej q0 a q1: ")
 
 
