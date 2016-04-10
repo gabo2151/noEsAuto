@@ -12,6 +12,7 @@ def menuConsola():
 	print "[2] Editar un estado"
 	print "[3] Verificar palabra"
 	print "[0] Salir"
+	print "=========================================\n"
 
 class Estado:
 	def __init__(self, nombre):
@@ -119,8 +120,8 @@ if __name__ == "__main__":
 		while True: #Loop infinito para ejecutar el programa sin terminarlo
 			os.system('cls' if os.name == 'nt' else 'clear')
 			menuConsola()
-			opc = input("Elija una opcion: ")
-			print "=========================================\n"
+			opc = int(raw_input("Elija una opcion: "))
+			print
 
 			if opc == 0: # Termina el programa
 				break #Termina el while
@@ -128,6 +129,7 @@ if __name__ == "__main__":
 			elif opc == 1:
 				for i in listaestados:
 					print "Nombre: %s\nIndices: " % i.nombre
+					if i.final: print "Estado final"
 					print i.indices
 					print
 
@@ -165,21 +167,31 @@ if __name__ == "__main__":
 					dirr = raw_input("Ingrese el numero del estado al cual se conecta\ncon el simbolo: ")
 					listaestados[numE].data()[alfa] = dirr
 
+				maybe3 = raw_input("Desea eliminar alguna transicion? (si o no)\n")
+				while maybe3 !="si" and maybe3 != "no":
+					maybe3 = raw_input("Desea eliminar alguna transicion? (si o no)\n")
+				if maybe3 == "si":
+					alfa = raw_input("Ingrese simbolo del alfabeto: ")
+					del listaestados[numE].data()[alfa]
+
 				pause()
 
 			elif opc == 3: # Probar palabra
 				eA = 0 #Estado actual
 				cuenta = 0
 				testWord = raw_input("Ingrese la palabra a analizar\n=> ")
+				print eA
 				for key in testWord:
+					print key
 					if key in listaestados[eA].indices:
 						eA = int( listaestados[eA].indices[key][1] )
 						cuenta +=1
+						print eA
 					else:
 						print "La palabra no pertenece a este lenguaje"
 						break
 
-					if cuenta == len(listaestados)-1:
+					if cuenta == len(testWord):
 						if listaestados[eA].final:
 							print "La palabra pertenece al lenguaje"
 							break
@@ -187,8 +199,11 @@ if __name__ == "__main__":
 							print "La palabra no pertenece a este lenguaje"
 							break
 
-
 				pause()
+
+			else:
+				# Do nothing
+				1+1
 
 	# Inicio del modo GUI
 	elif selGUI == 1:
