@@ -75,9 +75,9 @@ if __name__ == "__main__":
 		c = 0
 
 		#Estado inicial
-		estadoinicial = raw_input("Ingrese estado inicial: ")
+		estadoinicial = raw_input("Ingrese estado inicial (q0): ")
 		while type(estadoinicial) != str:
-			estadoinicial = raw_input("Ingrese estado inicial: ")
+			estadoinicial = raw_input("Ingrese estado inicial (q0): ")
 		listaestados.append(Estado(estadoinicial))
 
 		listaestados[0].inicial=True
@@ -129,12 +129,13 @@ if __name__ == "__main__":
 				for i in listaestados:
 					print "Nombre: %s\nIndices: " % i.nombre
 					print i.indices
+					print
 
 				pause()
 
 			elif opc == 2: # Edita estados
 				est = ""
-				for i in range(n):
+				for i in range(len(listaestados)):
 					est += listaestados[i].nombre + " "
 				print est
 				print "Seleccione el estado que desee editar (por su numero)"
@@ -143,25 +144,33 @@ if __name__ == "__main__":
 				print listaestados[numE].data()
 				print "Edicion\n"
 				
-				""" Cambiar si es estado final o no
-				talvez = raw_input("Desea que el estado "+ listaestados[numE].nombre+" sea estado final (si o no): ")
-				while talvez !="si" and talvez != "no":
+				maybe1 = raw_input("Desea cambiar tipo de estado? (si o no)\n")
+				while maybe1 !="si" and maybe1 != "no":
+					maybe1 = raw_input("Desea cambiar tipo de estado? (si o no)\n")
+				if maybe1 == "si":
+					#Cambiar si es estado final o no
 					talvez = raw_input("Desea que el estado "+ listaestados[numE].nombre+" sea estado final (si o no): ")
-				if talvez == "si":
-					listaestados[numE].final = True
-				else:
-					listaestados[numE].final = False"""
+					while talvez !="si" and talvez != "no":
+						talvez = raw_input("Desea que el estado "+ listaestados[numE].nombre+" sea estado final (si o no): ")
+					if talvez == "si":
+						listaestados[numE].final = True
+					else:
+						listaestados[numE].final = False
 
-				alfa = raw_input("Ingrese simbolo del alfabeto: ")
-				dirr = raw_input("Ingrese el numero del estado al cual se conecta\ncon el simbolo: ")
-				listaestados[numE].data()[alfa] = dirr
+				maybe2 = raw_input("Desea cambiar alguna transicion? (si o no)\n")
+				while maybe2 !="si" and maybe2 != "no":
+					maybe2 = raw_input("Desea cambiar alguna transicion? (si o no)\n")
+				if maybe2 == "si":
+					alfa = raw_input("Ingrese simbolo del alfabeto: ")
+					dirr = raw_input("Ingrese el numero del estado al cual se conecta\ncon el simbolo: ")
+					listaestados[numE].data()[alfa] = dirr
 
 				pause()
 
 			elif opc == 3: # Probar palabra
 				eA = 0 #Estado actual
 				cuenta = 0
-				testWord = raw_input("Ingrese la palabra a analizar\n=> :")
+				testWord = raw_input("Ingrese la palabra a analizar\n=> ")
 				for key in testWord:
 					if key in listaestados[eA].indices:
 						eA = int( listaestados[eA].indices[key][1] )
