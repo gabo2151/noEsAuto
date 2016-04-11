@@ -1,5 +1,6 @@
 import os
 import string
+import gui
 
 # Definir una funcion de pausa... por comodidad
 def pause():
@@ -208,6 +209,7 @@ if __name__ == "__main__":
 	# Inicio del modo GUI
 	elif selGUI == 1:
 		print "Iniciando GUI..."
-		pause()
+		os.system("python gui.py")
+		#pause()
 
 #interfaz grafica
