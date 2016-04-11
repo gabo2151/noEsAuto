@@ -211,5 +211,3 @@ if __name__ == "__main__":
 		print "Iniciando GUI..."
 		os.system("python gui.py")
 		#pause()
-
-#interfaz grafica
