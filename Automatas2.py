@@ -48,32 +48,36 @@ def devuelvePos(nombreestado):
 def estadoInicial(): #siempre la entrada sera considerada como un string, no puedo restringuir esto
 	listaestados.append(Estado(entry1.get()))
 	listaestados[0].inicial=True
-	text1.insert(INSERT,"Su estado inicial es: "+ entry1.get()+"\n")
+	text1.insert(INSERT,"- El estado inicial es: "+ entry1.get()+".\n")
 
 	#entry1.configure(bg="red") #poner el marco rojo
 	#entry1.update()	
 
 def creaTransiciones():
 	l = entry2.get().split()
+	verifica = True
 	if validaEstado(l[0]): #si el estado existe, solo agrego su transicion al diccionario indices
-		text1.insert(INSERT, "El estado " + l[0]+ " ya existe \n")
 		c = devuelvePos(l[0])
-		if validaTrans(c,l[1]):
-			text1.insert(INSERT, "Ya existe una transicion asociada a este simbolo\n")
+		if validaTrans(c,l[1]):#si existe una transicion con dicho simbolo para el primer estado
+			text1.insert(INSERT, "- Ya existe una transicion asociada a el simbolo ("+ l[1] +") para " + l[0] + ".\n")
+			verifica = False #con esto me aseguro de no crear el segundo estado, donde ya existe la transicion con ese simbolo
 		else:
 			listaestados[c].indices[l[1]]=l[2]
+			text1.insert(INSERT, "- La transicion (" + l[0] + " " + l[1] + " " + l[2] + ") ha sido agregada. \n")
 
 	else: #si el estado no existe, lo creo, y luego agrego la transicion
 		listaestados.append(Estado(l[0]))
 		c = devuelvePos(l[0])
+		text1.insert(INSERT, "- El estado " + l[0] + " ha sido creado.\n")
 		listaestados[c].indices[l[1]]=l[2]
+		text1.insert(INSERT, "- La transicion (" + l[0] + " " + l[1] + " " + l[2] + ") ha sido agregada. \n")
 
-		#segundo estado en la transicion
-		if validaEstado(l[2]):
-			text1.insert(INSERT, "El estado " + l[2] + " ya existe \n")
-
-		else:
+	#segundo estado en la transicion
+	if  verifica: #si la transicion se pudo agregar (porque no existia)
+		if not validaEstado(l[2]): #si el estado no existe, lo creo, y si existe no hago nada
 			listaestados.append(Estado(l[2]))
+			text1.insert(INSERT, "- El estado " + l[2] + " ha sido creado.\n")
+
 	cbutton1.deselect()
 	button2.configure(state=DISABLED)
 	button2.update()
@@ -85,7 +89,7 @@ def estadosFinales():
 		for j in range(len(listaestados)):
 			if listaestados[j].nombre == i:
 				listaestados[j].final = True
-				ttx = "%s cambiado a estado final." % listaestados[j].nombre
+				ttx = "- %s es ahora un estado final.\n" % listaestados[j].nombre
 				text1.insert(INSERT,ttx)
 				break
 
@@ -100,15 +104,14 @@ def verificaPalabra():
 			cuenta +=1
 			#text1.insert(INSERT,eA)
 		else:
-			text1.insert(INSERT,"La palabra no pertenece a este lenguaje \n")
+			text1.insert(INSERT,"La palabra no pertenece a este lenguaje.\n")
 			break
-
 		if cuenta == len(testWord):
 			if listaestados[eA].final:
-				text1.insert(INSERT, "La palabra pertenece al lenguaje \n")
+				text1.insert(INSERT, "La palabra pertenece al lenguaje.\n")
 				break
 			else:
-				text1.insert(INSERT,"La palabra no pertenece a este lenguaje \n")
+				text1.insert(INSERT,"La palabra no pertenece a este lenguaje.\n")
 				break
 
 
@@ -125,78 +128,76 @@ def activar(): #funcion asociada a los check button
     	button2.update()
 
 def limpiar():
-	text1.delete('2.0', END) #2.0 desde la segunda fila en adelante
+	text1.delete('1.0', END) #primera fila al final
 	text1.insert(INSERT,"\n") #arreglin
 
 
 #variables
 listaestados = [] #lista de objetos tipo estado
-#l = []
-#c = 0
 
 #interfaz grafica   
 root= Tk()
 root.title("Simulador de AFD")
-root.geometry("500x600") #anchoxalto
+root.geometry("510x580") #anchoxalto
 
-frame1 = Frame(root,width=500,height=600) #estaba pensando en tener multiples frames para las etapas del programa
+frame1 = Frame(root,width=510,height=575) #estaba pensando en tener multiples frames para las etapas del programa
 frame1.pack()
 
 CheckVar1 = IntVar()
 
 label1 = Label(frame1, text="Estado inicial")
-label1.place(x=15, y=15)
+label1.place(x=25, y=20)
 
-entry1 = Entry(frame1,width=6)
-entry1.place(x=125, y=15)
+entry1 = Entry(frame1,width=7)
+entry1.place(x=125, y=20)
 
 button1= Button(frame1,text="Definir", command=estadoInicial)
-button1.place(x=190, y=10)
-
-
+button1.place(x=195, y=15)
+	
 label2 = Label(frame1, text="Transiciones")
-label2.place(x=15, y=45)
+label2.place(x=25, y=55)
 
 label3 = Label(frame1, text="Ej: q0 a q1")
-label3.place(x=125, y=70)
+label3.place(x=125, y=77)
 
 entry2 = Entry(frame1,width=20)
-entry2.place(x=125, y=45)
+entry2.place(x=125, y=55)
 
 cbutton1= Checkbutton(frame1,text="Confirmar", variable=CheckVar1, onvalue=1, offvalue=0, command=activar)
-cbutton1.place(x=300, y=40)
+cbutton1.place(x=300, y=55)
 
 button2 = Button(frame1, state=DISABLED, text="Agregar", command=creaTransiciones)
-button2.place(x=400, y=40)
+button2.place(x=400, y=50)
 
-label3 = Label(frame1, text="Estados finales")
-label3.place(x=15, y=115)
+label4 = Label(frame1, text="Estados finales")
+label4.place(x=25, y=110)
 
-label4 = Label(frame1, text="Ej: q0 q1 q2 ...")
-label4.place(x=125, y=140)
+entry3 = Entry(frame1, width=25)
+entry3.place(x=125, y=110)
 
-entry3 = Entry(frame1, width=20)
-entry3.place(x=125, y=115)
+label5 = Label(frame1, text="Ej: q0 q1 q2 ...")
+label5.place(x=125, y=132)
 
 button3 = Button(frame1, text="Definir",command=estadosFinales)
-button3.place(x=300, y=110)
+button3.place(x=340, y=105)
 
-label5 = Label(frame1, text="Palabra")
-label5.place(x=15, y=175)
+label6 = Label(frame1, text="Palabra")
+label6.place(x=25, y=165)
 
-entry4 = Entry(frame1, width=20)
-entry4.place(x=125, y=175)
+entry4 = Entry(frame1, width=25)
+entry4.place(x=125, y=165)
 
 button4 = Button(frame1, text="Evaluar", command=verificaPalabra)
-button4.place(x=300, y=170)
+button4.place(x=340, y=160)
 
+label6 = Label(frame1, text="Consola de Procesos")
+label6.place(x=25, y=210)
 
 text1 = Text(frame1,width=65, height=20, wrap=WORD)
-text1.place(x=15, y=225)
-text1.insert(INSERT, "Consola de Procesos" +"\n")
+text1.place(x=25, y=230)
 
 button5 = Button(frame1, text="Limpiar Consola",command=limpiar)
-button5.place(x=325, y=545)
+button5.place(x=365	, y=545)
 
 root.mainloop()
 
