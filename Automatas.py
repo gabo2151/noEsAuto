@@ -209,5 +209,5 @@ if __name__ == "__main__":
 	# Inicio del modo GUI
 	elif selGUI == 1:
 		print "Iniciando GUI..."
-		os.system("python gui.py")
+		os.system("python Automatas2.py")
 		#pause()

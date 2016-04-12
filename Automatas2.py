@@ -80,21 +80,25 @@ def creaTransiciones():
 
 
 def estadosFinales():
-	print "aun valgo verga man"
-	"""l2 = entry3.get().split() #como verifico a cada estado ahorrando codigo xd HELP
-	largol2 = len(l2)
-	count = 0"""
+	l2 = entry3.get().split() #como verifico a cada estado ahorrando codigo xd HELP
+	for i in l2:
+		for j in range(len(listaestados)):
+			if listaestados[j].nombre == i:
+				listaestados[j].final = True
+				ttx = "%s cambiado a estado final." % listaestados[j].nombre
+				text1.insert(INSERT,ttx)
+				break
 
 def verificaPalabra():
 	eA = 0 #Estado actual
 	cuenta = 0
 	testWord = entry4.get()
 	for key in testWord:
-		text1.insert(INSERT,key)
+		#text1.insert(INSERT,key)
 		if key in listaestados[eA].indices:
-			eA = int( listaestados[eA].indices[key][1] )
+			eA = int( listaestados[eA].indices[key][1:len(listaestados[eA].nombre)] )
 			cuenta +=1
-			text1.insert(INSERT,eA)
+			#text1.insert(INSERT,eA)
 		else:
 			text1.insert(INSERT,"La palabra no pertenece a este lenguaje \n")
 			break
@@ -183,7 +187,7 @@ label5.place(x=15, y=175)
 entry4 = Entry(frame1, width=20)
 entry4.place(x=125, y=175)
 
-button4 = Button(frame1, text="Evaluar")
+button4 = Button(frame1, text="Evaluar", command=verificaPalabra)
 button4.place(x=300, y=170)
 
 
