@@ -96,14 +96,22 @@ def creaTransiciones():
 
 
 def estadosFinales():
-	l2 = entry3.get().split() #como verifico a cada estado ahorrando codigo xd HELP
-	for i in l2:
-		for j in range(len(listaestados)):
-			if listaestados[j].nombre == i:
-				listaestados[j].final = True
-				ttx = "- %s es ahora un estado final.\n" % listaestados[j].nombre
-				text1.insert(INSERT,ttx)
-				break
+	if entry3.get() != "":
+		entry3.config(highlightbackground="#d9d9d9")#normalizo colores
+		entry3.config(highlightcolor="black")
+		l2 = entry3.get().split() #como verifico a cada estado ahorrando codigo xd HELP
+		for i in l2:
+			for j in range(len(listaestados)):
+				if listaestados[j].nombre == i:
+					listaestados[j].final = True
+					ttx = "- %s es ahora un estado final.\n" % listaestados[j].nombre
+					text1.insert(INSERT,ttx)
+					break
+	else:
+		entry3.config(highlightbackground="red") #con widget.cget('highlightbackground') consegui este valor ty internet
+		entry3.config(highlightcolor="red")
+
+
 
 def verificaPalabra():
 	eA = 0 #Estado actual
