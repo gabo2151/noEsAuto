@@ -104,14 +104,14 @@ def verificaPalabra():
 			cuenta +=1
 			#text1.insert(INSERT,eA)
 		else:
-			text1.insert(INSERT,"La palabra no pertenece a este lenguaje.\n")
+			text1.insert(INSERT,"- La palabra (" + testWord + ") no pertenece a este lenguaje.\n")
 			break
 		if cuenta == len(testWord):
 			if listaestados[eA].final:
-				text1.insert(INSERT, "La palabra pertenece al lenguaje.\n")
+				text1.insert(INSERT, "- La palabra (" + testWord + ") pertenece al lenguaje.\n")
 				break
 			else:
-				text1.insert(INSERT,"La palabra no pertenece a este lenguaje.\n")
+				text1.insert(INSERT,"- La palabra (" + testWord + ") no pertenece a este lenguaje.\n")
 				break
 
 
@@ -131,14 +131,24 @@ def limpiar():
 	text1.delete('1.0', END) #primera fila al final
 	text1.insert(INSERT,"\n") #arreglin
 
+def hardReset():
+	listaestados[:] = [] #elimino de mi lista estados todos los estados
+	text1.delete('1.0', END) #ademas borro los datos de la consola
+	cbutton1.deselect() #en caso de que haya quedado marcado el cbutton
+	entry1.delete(0, END)
+	entry2.delete(0, END)
+	entry3.delete(0, END)
+	entry4.delete(0, END)
 
-#variables
+#variablE_ esta zholita :c
 listaestados = [] #lista de objetos tipo estado
 
 #interfaz grafica   
 root= Tk()
 root.title("Simulador de AFD")
 root.geometry("510x580") #anchoxalto
+
+#ejfont = tkFont.Font(family="Helvetica",underline=1, size=36, weight="bold")
 
 frame1 = Frame(root,width=510,height=575) #estaba pensando en tener multiples frames para las etapas del programa
 frame1.pack()
@@ -197,7 +207,13 @@ text1 = Text(frame1,width=65, height=20, wrap=WORD)
 text1.place(x=25, y=230)
 
 button5 = Button(frame1, text="Limpiar Consola",command=limpiar)
-button5.place(x=365	, y=545)
+button5.place(x=280, y=545)
+
+button6 = Button(frame1, text="Reiniciar",command=hardReset)
+button6.place(x=410, y=545)
+
+
+
 
 root.mainloop()
 
