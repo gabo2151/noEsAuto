@@ -43,7 +43,7 @@ def devuelvePos(nombreestado):
 			break
 
 
-#nuevas funciones
+#Nuevas funciones (cuando se incluyo gui estas surgieron por necesidad)
 
 def estadoInicial():
 	if entry1.get() != "": #si la entrada es distinta de vacio, ajusto los colores a los por defecto y creo el estado inicial
@@ -61,9 +61,10 @@ def estadoInicial():
 def creaTransiciones():
 	l = entry2.get().split()
 	verifica = True
-	if len(l) == 3: #solo si el largo de mi lista es 3 trabajare
+	if len(listaestados)!= 0 and len(l) == 3: #solo si existen estados dentro de listaestados y si el largo de mi lista es 3 creare transiciones
 		entry2.config(highlightbackground="#d9d9d9") #con widget.cget('highlightbackground') consegui este valor ty internet
 		entry2.config(highlightcolor="black")
+		text1.insert(INSERT, "- Verifique que ingreso estado inicial, o si no esta respetando la estructura de ingreso. \n")
 		if validaEstado(l[0]): #si el estado existe, solo agrego su transicion al diccionario indices
 			c = devuelvePos(l[0])
 			if validaTrans(c,l[1]):#si existe una transicion con dicho simbolo para el primer estado
@@ -94,12 +95,12 @@ def creaTransiciones():
 		entry2.config(highlightcolor="red")
 
 
-
-def estadosFinales():
+#ya vali verga man
+"""def estadosFinales():
 	if entry3.get() != "":
-		entry3.config(highlightbackground="#d9d9d9")#normalizo colores
+		entry3.config(highlightbackground="#d9d9d9")
 		entry3.config(highlightcolor="black")
-		l2 = entry3.get().split() #como verifico a cada estado ahorrando codigo xd HELP
+		l2 = entry3.get().split()
 		for i in l2:
 			for j in range(len(listaestados)):
 				if listaestados[j].nombre == i:
@@ -108,7 +109,24 @@ def estadosFinales():
 					text1.insert(INSERT,ttx)
 					break
 	else:
-		entry3.config(highlightbackground="red") #con widget.cget('highlightbackground') consegui este valor ty internet
+		entry3.config(highlightbackground="red")
+		entry3.config(highlightcolor="red")"""
+
+
+def estadosFinales():# ave fenix
+	if entry3.get() != "":
+		entry3.config(highlightbackground="#d9d9d9")
+		entry3.config(highlightcolor="black")
+		l2 = entry3.get().split()
+		for i in range(len(l2)):
+			if validaEstado(l2[i]):#si el estado se encuentra dentro de la listaestados
+				c = devuelvePos(l2[i]) #ubico su posicion y lo vuelvo final
+				listaestados[c].final = True
+				text1.insert(INSERT,"- " + listaestados[i].nombre + " es ahora un estado final.")
+			else:
+				text1.insert(INSERT, "El estado (" + l2[i] + ") no existe.\n")
+	else:
+		entry3.config(highlightbackground="red")
 		entry3.config(highlightcolor="red")
 
 
@@ -117,29 +135,35 @@ def verificaPalabra():
 	eA = 0 #Estado actual
 	cuenta = 0
 	testWord = entry4.get()
-	for key in testWord:
-		#text1.insert(INSERT,key)
-		if key in listaestados[eA].indices:
-			current = listaestados[eA].indices[key]
-			for i in range( len( listaestados ) ):
-				if current == listaestados[i].nombre:
-					eA = i
-					break
-			cuenta +=1
-			#text1.insert(INSERT,eA)
-		else:
-			text1.insert(INSERT,"- La palabra (" + testWord + ")no pertenece a este lenguaje.\n")
-			break
-		if cuenta == len(testWord):
-			if listaestados[eA].final:
-				text1.insert(INSERT, "- La palabra (" + testWord + ") pertenece al lenguaje.\n")
-				break
+	if testWord != "":
+		entry4.config(highlightbackground="#d9d9d9")
+		entry4.config(highlightcolor="black")
+		for key in testWord:
+			#text1.insert(INSERT,key)
+			if key in listaestados[eA].indices:
+				current = listaestados[eA].indices[key]
+				for i in range( len( listaestados ) ):
+					if current == listaestados[i].nombre:
+						eA = i
+						break
+				cuenta +=1
+				#text1.insert(INSERT,eA)
 			else:
-				text1.insert(INSERT,"- La palabra (" + testWord + ") no pertenece a este lenguaje.\n")
+				text1.insert(INSERT,"- La palabra (" + testWord + ")no pertenece a este lenguaje.\n")
 				break
+			if cuenta == len(testWord):
+				if listaestados[eA].final:
+					text1.insert(INSERT, "- La palabra (" + testWord + ") pertenece al lenguaje.\n")
+					break
+				else:
+					text1.insert(INSERT,"- La palabra (" + testWord + ") no pertenece a este lenguaje.\n")
+					break
+	else:
+		entry4.config(highlightbackground="red")
+		entry4.config(highlightcolor="red")
 
 
-#funciones interfaz grafica
+#Funciones interfaz grafica
 
 def activar(): #funcion asociada al check button
     if CheckVar1.get() == 1:
@@ -153,26 +177,29 @@ def limpiar():
 	text1.delete('1.0', END) #primera fila al final
 	text1.insert(INSERT,"\n") #arreglin
 
-def hardReset():
+def hardReset():#esta funcion se encarga de volver todo a su valor original
 	listaestados[:] = [] #elimino de mi lista estados todos los estados
-	text1.delete('1.0', END) #ademas borro los datos de la consola
-	cbutton1.deselect() #en caso de que haya quedado marcado el cbutton
-	entry1.delete(0, END)
-	entry2.delete(0, END)
-	entry3.delete(0, END)
-	entry4.delete(0, END)
+	text1.delete('1.0', END) #borro los datos de la consola
+	cbutton1.deselect() #en caso de que el cbutton este seleccionado, lo deselecciono
+	button2.configure(state=DISABLED)#y ademas dejo al boton asociado desactivado
+	for i in range (len(listaentradas)): #decidi hacer una lista de objetos tipo entry para manipularlos mas facilmente a la hora de reiniciar el programa
+		listaentradas[i].delete(0, END) #borro todos los datos de todas las entry, y si estan rojos a sus valores originales
+		if listaentradas[i].cget('highlightbackground') == "red" and listaentradas[i].cget('highlightcolor') == "red":
+			listaentradas[i].config(highlightbackground="#d9d9d9")
+			listaentradas[i].config(highlightcolor="black")
 
-#variablE_ esta zholita :c
+
+#Variables
 listaestados = [] #lista de objetos tipo estado
+listaentradas = [] #lista de objetos tipo entry
 
-#interfaz grafica   
+#Interfaz Grafica  
 root= Tk()
 root.title("Simulador de AFD")
 root.geometry("510x580") #anchoxalto
 
-#ejfont = tkFont.Font(family="Helvetica",underline=1, size=36, weight="bold")
 
-frame1 = Frame(root,width=510,height=575) #estaba pensando en tener multiples frames para las etapas del programa
+frame1 = Frame(root,width=510,height=575)
 frame1.pack()
 
 CheckVar1 = IntVar()
@@ -182,6 +209,7 @@ label1.place(x=25, y=20)
 
 entry1 = Entry(frame1,width=7)
 entry1.place(x=125, y=20)
+listaentradas.append(entry1)
 
 button1= Button(frame1,text="Definir", command=estadoInicial)
 button1.place(x=195, y=15)
@@ -194,6 +222,7 @@ label3.place(x=125, y=77)
 
 entry2 = Entry(frame1,width=20)
 entry2.place(x=125, y=55)
+listaentradas.append(entry2)
 
 cbutton1= Checkbutton(frame1,text="Confirmar", variable=CheckVar1, onvalue=1, offvalue=0, command=activar)
 cbutton1.place(x=300, y=55)
@@ -206,6 +235,7 @@ label4.place(x=25, y=110)
 
 entry3 = Entry(frame1, width=25)
 entry3.place(x=125, y=110)
+listaentradas.append(entry3)
 
 label5 = Label(frame1, text="Ej: q0 q1 q2 ...")
 label5.place(x=125, y=132)
@@ -218,6 +248,7 @@ label6.place(x=25, y=165)
 
 entry4 = Entry(frame1, width=25)
 entry4.place(x=125, y=165)
+listaentradas.append(entry4)
 
 button4 = Button(frame1, text="Evaluar", command=verificaPalabra)
 button4.place(x=340, y=160)
@@ -233,9 +264,6 @@ button5.place(x=280, y=545)
 
 button6 = Button(frame1, text="Reiniciar",command=hardReset)
 button6.place(x=410, y=545)
-
-
-
 
 root.mainloop()
 
