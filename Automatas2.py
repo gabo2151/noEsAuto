@@ -155,9 +155,9 @@ def hardReset():# se encarga de volver todo a su valor original para asi no rein
 if __name__ == "__main__":
 	root= Tk()
 	root.title("Simulador de AFD")
-	root.geometry("510x580") #anchoxalto
-	
-	frame1 = Frame(root, width=510, height=575)
+	root.geometry("515x590") #anchoxalto
+
+	frame1 = Frame(root,width=515, height=590)
 	frame1.pack()
 
 	listaestados = [] #lista de objetos tipo estado
@@ -211,8 +211,13 @@ if __name__ == "__main__":
 	label6 = Label(frame1, text="Consola de Procesos")
 	label6.place(x=25, y=210)
 
-	text1 = Text(frame1, width=65, height=20, wrap=WORD)
+	scrollbar1 = Scrollbar(frame1)
+	scrollbar1.place(x=490, y=375)
+
+	text1 = Text(frame1, width=65, height=20, wrap=WORD, yscrollcommand=scrollbar1.set)
 	text1.place(x=25, y=230)
+
+	scrollbar1.config(command=text1.yview)
 
 	button5 = Button(frame1, text="Limpiar Consola", command=limpiar)
 	button5.place(x=280, y=545)
