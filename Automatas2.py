@@ -30,13 +30,13 @@ def validaEstado(nombreestado):
 	return False
 
 
-def validaTrans(pos,clave):
+def validaTrans(pos,clave): #devuelve verdadero si la clave se encuentra en estado que se encuentra en pos
 	if clave in listaestados[pos].indices:
 		return True
 	else:
 		return False
 
-def devuelvePos(nombreestado):
+def devuelvePos(nombreestado):#busca el estado en la lista y devuelve su posicion
 	for i in range(len(listaestados)):
 		if listaestados[i].nombre == nombreestado:
 			return i
@@ -53,7 +53,7 @@ def estadoInicial():
 		listaestados[0].inicial=True
 		button1.configure(state=DISABLED)
 		button1.update()
-		text1.insert(INSERT,"- El estado inicial es: "+ entry1.get()+".\n")
+		text1.insert(INSERT,"- El estado inicial es (%s).\n" %(entry1.get()))
 
 	else: #si no, el borde se vuelve rojo cuando esta enfocado y cuando no en la entrada
 		entry1.config(highlightbackground="red")
@@ -70,71 +70,53 @@ def creaTransiciones():
 		if validaEstado(l[0]): #si el estado existe, solo agrego su transicion al diccionario indices
 			c = devuelvePos(l[0])
 			if validaTrans(c,l[1]):#si existe una transicion con dicho simbolo para el primer estado
-				text1.insert(INSERT, "- Ya existe una transicion asociada a el simbolo ("+ l[1] +") para " + l[0] + ".\n")
-				verifica = False #con esto me aseguro de no crear el segundo estado, donde ya existe la transicion con ese simbolo
+				text1.insert(INSERT, "- Ya existe una transicion asociada a el simbolo <%s> para %s.\n" %(l[1], l[0]))
+				verifica = False #con esto me aseguro de no crear el segundo estado, ya que existe una ransicion con ese simbolo
 			else:
 				listaestados[c].indices[l[1]]=l[2]
-				text1.insert(INSERT, "- La transicion (" + l[0] + " " + l[1] + " " + l[2] + ") ha sido agregada. \n")
+				text1.insert(INSERT, "- La transicion [%s %s %s] ha sido agregada. \n" %(l[0], l[1], l[2]))
 
 		else: #si el estado no existe, lo creo, y luego agrego la transicion
 			listaestados.append(Estado(l[0]))
 			c = devuelvePos(l[0])
-			text1.insert(INSERT, "- El estado " + l[0] + " ha sido creado.\n")
+			text1.insert(INSERT, "- El estado (%s) ha sido creado.\n" %(l[0]))
 			listaestados[c].indices[l[1]]=l[2]
-			text1.insert(INSERT, "- La transicion (" + l[0] + " " + l[1] + " " + l[2] + ") ha sido agregada. \n")
+			text1.insert(INSERT, "- La transicion [%s %s %s] ha sido agregada.\n" %(l[0], l[1], l[2]))
 
 		#segundo estado en la transicion
 		if  verifica: #si la transicion se pudo agregar (porque no existia)
 			if not validaEstado(l[2]): #si el estado no existe, lo creo, y si existe no hago nada
 				listaestados.append(Estado(l[2]))
-				text1.insert(INSERT, "- El estado " + l[2] + " ha sido creado.\n")
+				text1.insert(INSERT, "- El estado (%s) ha sido creado.\n" %(l[2]))
 
 		cbutton1.deselect()
 		button2.configure(state=DISABLED)
 		button2.update()
 	else:
-		text1.insert(INSERT, "- Verifique si ingreso estado inicial, o si no esta respetando la estructura de ingreso para transiciones.\n")
+		text1.insert(INSERT, "- Verifique si esta respetando la estructura de ingreso, o si aun no ingresa un estado inicial.\n")
 		entry2.config(highlightbackground="red") #siempre que sea != de 3 el largo de la lista, el borde contenedor sera rojo
 		entry2.config(highlightcolor="red")
 
-
-#ya vali verga man
-"""def estadosFinales():
+def estadosFinales():
 	if entry3.get() != "":
 		entry3.config(highlightbackground="#d9d9d9")
 		entry3.config(highlightcolor="black")
-		l2 = entry3.get().split()
-		for i in l2:
-			for j in range(len(listaestados)):
-				if listaestados[j].nombre == i:
-					listaestados[j].final = True
-					ttx = "- %s es ahora un estado final.\n" % listaestados[j].nombre
-					text1.insert(INSERT,ttx)
-					break
-	else:
-		entry3.config(highlightbackground="red")
-		entry3.config(highlightcolor="red")"""
-
-
-def estadosFinales():# ave fenix
-	if entry3.get() != "":
-		entry3.config(highlightbackground="#d9d9d9")
-		entry3.config(highlightcolor="black")
-		l2 = entry3.get().split()
+		l2 = entry3.get().split() #transformo en una lista la entrada del usuario
 		for i in range(len(l2)):
 			if validaEstado(l2[i]):#si el estado se encuentra dentro de la listaestados
 				c = devuelvePos(l2[i]) #ubico su posicion y lo vuelvo final
 				listaestados[c].final = True
-				text1.insert(INSERT,"- " + listaestados[i].nombre + " es ahora un estado final.")
+				text1.insert(INSERT, "- (%s) es ahora un estado final.\n" %(l2[i]))
 			else:
-				text1.insert(INSERT, "El estado (" + l2[i] + ") no existe.\n")
+				text1.insert(INSERT, "- El estado (%s) no existe. \n" %(l2[i]))
 	else:
+		text1.insert(INSERT, "- No ha ingresado estados finales.") 
 		entry3.config(highlightbackground="red")
 		entry3.config(highlightcolor="red")
 
 
 
-def verificaPalabra():
+def verificaPalabra2(): #el del gabo
 	eA = 0 #Estado actual
 	cuenta = 0
 	testWord = entry4.get()
@@ -142,33 +124,60 @@ def verificaPalabra():
 		entry4.config(highlightbackground="#d9d9d9")
 		entry4.config(highlightcolor="black")
 		for key in testWord:
-			#text1.insert(INSERT,key)
-			if key in listaestados[eA].indices:
-				current = listaestados[eA].indices[key]
-				for i in range( len( listaestados ) ):
+			if key in listaestados[eA].indices: #si el caracter se encuentra como clave en el diccionario indices
+				current = listaestados[eA].indices[key] #defino current como el valor asociado al caracter (un estado)
+				for i in range(len(listaestados)):
 					if current == listaestados[i].nombre:
 						eA = i
 						break
 				cuenta +=1
-				#text1.insert(INSERT,eA)
 			else:
-				text1.insert(INSERT,"- La palabra (" + testWord + ")no pertenece a este lenguaje.\n")
+				text1.insert(INSERT,"- La palabra (%s) no pertenece al lenguaje.\n" %(testWord))
 				break
 			if cuenta == len(testWord):
 				if listaestados[eA].final:
-					text1.insert(INSERT, "- La palabra (" + testWord + ") pertenece al lenguaje.\n")
+					text1.insert(INSERT,"- La palabra (%s) pertenece al lenguaje.\n" %(testWord))
 					break
 				else:
-					text1.insert(INSERT,"- La palabra (" + testWord + ") no pertenece a este lenguaje.\n")
+					text1.insert(INSERT,"- La palabra (%s) no pertenece al lenguaje.\n" %(testWord))
 					break
 	else:
 		entry4.config(highlightbackground="red")
 		entry4.config(highlightcolor="red")
 
 
+
+def verificaPalabra(): #nuevo ave fenix
+	eA = 0 # estado actual
+	cuenta = 0
+	testWord = entry4.get()
+	if testWord != "":
+		entry4.config(highlightbackground="#d9d9d9")
+		entry4.config(highlightcolor="black")
+		for key in testWord: #para cada caracter en la palabra 1 a 1
+			if key in listaestados[eA].indices: #si el caracter se encuentra como clave en el diccionario indices para el estado en la posicion eA
+				current = listaestados[eA].indices[key] #defino current como el valor asociado a la clave (un estado)
+				eA = devuelvePos(current) #e igualo a eA  a la posicion en listaestados en la que se encuentra current
+				cuenta +=1
+			else:
+				text1.insert(INSERT,"- La palabra (%s) no pertenece al lenguaje.\n" %(testWord))
+				break
+			if cuenta == len(testWord):
+				if listaestados[eA].final:
+					text1.insert(INSERT,"- La palabra (%s) pertenece al lenguaje.\n" %(testWord))
+					break
+				else:
+					text1.insert(INSERT,"- La palabra (%s) no pertenece al lenguaje.\n" %(testWord))
+					break
+	else:
+		text1.insert(INSERT, "- El ingreso no puede ser vacio.\n")
+		entry4.config(highlightbackground="red")
+		entry4.config(highlightcolor="red")
+
+
 #Funciones interfaz grafica
 
-def activar(): #funcion asociada al check button
+def activar(): #funcion que enlaza el cbutton1 con el button2
     if CheckVar1.get() == 1:
     	button2.configure(state=NORMAL)
     	button2.update()
@@ -177,8 +186,8 @@ def activar(): #funcion asociada al check button
     	button2.update()
 
 def limpiar():
-	text1.delete('1.0', END) #primera fila al final
-	text1.insert(INSERT,"\n") #arreglin
+	text1.delete('1.0', END) #borro desde la primera fila hasta elfinal
+	#text1.insert(INSERT,"\n")
 
 def hardReset():#esta funcion se encarga de volver todo a su valor original
 	listaestados[:] = [] #elimino de mi lista estados todos los estados
@@ -187,7 +196,7 @@ def hardReset():#esta funcion se encarga de volver todo a su valor original
 	cbutton1.deselect() #en caso de que el cbutton este seleccionado, lo deselecciono
 	button2.configure(state=DISABLED)#y ademas dejo al boton asociado al cbutton desactivado
 	for i in range (len(listaentradas)): #decidi hacer una lista de objetos tipo entry para manipularlos mas facilmente a la hora de reiniciar el programa
-		listaentradas[i].delete(0, END) #borro todos los datos de todas las entry, y si estan rojos a sus valores originales
+		listaentradas[i].delete(0, END) #borro todos los datos de todas las entry, y si estan con sus bordes rojos, vuelven a sus valores originales
 		if listaentradas[i].cget('highlightbackground') == "red" and listaentradas[i].cget('highlightcolor') == "red":
 			listaentradas[i].config(highlightbackground="#d9d9d9")
 			listaentradas[i].config(highlightcolor="black")
