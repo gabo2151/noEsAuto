@@ -51,7 +51,10 @@ def estadoInicial():
 		entry1.config(highlightcolor="black")
 		listaestados.append(Estado(entry1.get()))
 		listaestados[0].inicial=True
+		button1.configure(state=DISABLED)
+		button1.update()
 		text1.insert(INSERT,"- El estado inicial es: "+ entry1.get()+".\n")
+
 	else: #si no, el borde se vuelve rojo cuando esta enfocado y cuando no en la entrada
 		entry1.config(highlightbackground="red")
 		entry1.config(highlightcolor="red")
@@ -64,7 +67,6 @@ def creaTransiciones():
 	if len(listaestados)!= 0 and len(l) == 3: #solo si existen estados dentro de listaestados y si el largo de mi lista es 3 creare transiciones
 		entry2.config(highlightbackground="#d9d9d9") #con widget.cget('highlightbackground') consegui este valor ty internet
 		entry2.config(highlightcolor="black")
-		text1.insert(INSERT, "- Verifique que ingreso estado inicial, o si no esta respetando la estructura de ingreso. \n")
 		if validaEstado(l[0]): #si el estado existe, solo agrego su transicion al diccionario indices
 			c = devuelvePos(l[0])
 			if validaTrans(c,l[1]):#si existe una transicion con dicho simbolo para el primer estado
@@ -91,6 +93,7 @@ def creaTransiciones():
 		button2.configure(state=DISABLED)
 		button2.update()
 	else:
+		text1.insert(INSERT, "- Verifique si ingreso estado inicial, o si no esta respetando la estructura de ingreso para transiciones.\n")
 		entry2.config(highlightbackground="red") #siempre que sea != de 3 el largo de la lista, el borde contenedor sera rojo
 		entry2.config(highlightcolor="red")
 
@@ -180,8 +183,9 @@ def limpiar():
 def hardReset():#esta funcion se encarga de volver todo a su valor original
 	listaestados[:] = [] #elimino de mi lista estados todos los estados
 	text1.delete('1.0', END) #borro los datos de la consola
+	button1.configure(state=NORMAL)#nueva consideracion
 	cbutton1.deselect() #en caso de que el cbutton este seleccionado, lo deselecciono
-	button2.configure(state=DISABLED)#y ademas dejo al boton asociado desactivado
+	button2.configure(state=DISABLED)#y ademas dejo al boton asociado al cbutton desactivado
 	for i in range (len(listaentradas)): #decidi hacer una lista de objetos tipo entry para manipularlos mas facilmente a la hora de reiniciar el programa
 		listaentradas[i].delete(0, END) #borro todos los datos de todas las entry, y si estan rojos a sus valores originales
 		if listaentradas[i].cget('highlightbackground') == "red" and listaentradas[i].cget('highlightcolor') == "red":
