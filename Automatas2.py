@@ -112,7 +112,11 @@ def verificaPalabra():
 	for key in testWord:
 		#text1.insert(INSERT,key)
 		if key in listaestados[eA].indices:
-			eA = int( listaestados[eA].indices[key][1:len(listaestados[eA].nombre)] )
+			current = listaestados[eA].indices[key]
+			for i in range( len( listaestados ) ):
+				if current == listaestados[i].nombre:
+					eA = i
+					break
 			cuenta +=1
 			#text1.insert(INSERT,eA)
 		else:
