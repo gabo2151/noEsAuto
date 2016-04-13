@@ -45,42 +45,54 @@ def devuelvePos(nombreestado):
 
 #nuevas funciones
 
-def estadoInicial(): #siempre la entrada sera considerada como un string, no puedo restringuir esto
-	listaestados.append(Estado(entry1.get()))
-	listaestados[0].inicial=True
-	text1.insert(INSERT,"- El estado inicial es: "+ entry1.get()+".\n")
+def estadoInicial():
+	if entry1.get() != "": #si la entrada es distinta de vacio, ajusto los colores a los por defecto y creo el estado inicial
+		entry1.config(highlightbackground="#d9d9d9")
+		entry1.config(highlightcolor="black")
+		listaestados.append(Estado(entry1.get()))
+		listaestados[0].inicial=True
+		text1.insert(INSERT,"- El estado inicial es: "+ entry1.get()+".\n")
+	else: #si no, el borde se vuelve rojo cuando esta enfocado y cuando no en la entrada
+		entry1.config(highlightbackground="red")
+		entry1.config(highlightcolor="red")
 
-	#entry1.configure(bg="red") #poner el marco rojo
-	#entry1.update()	
+
 
 def creaTransiciones():
 	l = entry2.get().split()
 	verifica = True
-	if validaEstado(l[0]): #si el estado existe, solo agrego su transicion al diccionario indices
-		c = devuelvePos(l[0])
-		if validaTrans(c,l[1]):#si existe una transicion con dicho simbolo para el primer estado
-			text1.insert(INSERT, "- Ya existe una transicion asociada a el simbolo ("+ l[1] +") para " + l[0] + ".\n")
-			verifica = False #con esto me aseguro de no crear el segundo estado, donde ya existe la transicion con ese simbolo
-		else:
+	if len(l) == 3: #solo si el largo de mi lista es 3 trabajare
+		entry2.config(highlightbackground="#d9d9d9") #con widget.cget('highlightbackground') consegui este valor ty internet
+		entry2.config(highlightcolor="black")
+		if validaEstado(l[0]): #si el estado existe, solo agrego su transicion al diccionario indices
+			c = devuelvePos(l[0])
+			if validaTrans(c,l[1]):#si existe una transicion con dicho simbolo para el primer estado
+				text1.insert(INSERT, "- Ya existe una transicion asociada a el simbolo ("+ l[1] +") para " + l[0] + ".\n")
+				verifica = False #con esto me aseguro de no crear el segundo estado, donde ya existe la transicion con ese simbolo
+			else:
+				listaestados[c].indices[l[1]]=l[2]
+				text1.insert(INSERT, "- La transicion (" + l[0] + " " + l[1] + " " + l[2] + ") ha sido agregada. \n")
+
+		else: #si el estado no existe, lo creo, y luego agrego la transicion
+			listaestados.append(Estado(l[0]))
+			c = devuelvePos(l[0])
+			text1.insert(INSERT, "- El estado " + l[0] + " ha sido creado.\n")
 			listaestados[c].indices[l[1]]=l[2]
 			text1.insert(INSERT, "- La transicion (" + l[0] + " " + l[1] + " " + l[2] + ") ha sido agregada. \n")
 
-	else: #si el estado no existe, lo creo, y luego agrego la transicion
-		listaestados.append(Estado(l[0]))
-		c = devuelvePos(l[0])
-		text1.insert(INSERT, "- El estado " + l[0] + " ha sido creado.\n")
-		listaestados[c].indices[l[1]]=l[2]
-		text1.insert(INSERT, "- La transicion (" + l[0] + " " + l[1] + " " + l[2] + ") ha sido agregada. \n")
+		#segundo estado en la transicion
+		if  verifica: #si la transicion se pudo agregar (porque no existia)
+			if not validaEstado(l[2]): #si el estado no existe, lo creo, y si existe no hago nada
+				listaestados.append(Estado(l[2]))
+				text1.insert(INSERT, "- El estado " + l[2] + " ha sido creado.\n")
 
-	#segundo estado en la transicion
-	if  verifica: #si la transicion se pudo agregar (porque no existia)
-		if not validaEstado(l[2]): #si el estado no existe, lo creo, y si existe no hago nada
-			listaestados.append(Estado(l[2]))
-			text1.insert(INSERT, "- El estado " + l[2] + " ha sido creado.\n")
+		cbutton1.deselect()
+		button2.configure(state=DISABLED)
+		button2.update()
+	else:
+		entry2.config(highlightbackground="red") #siempre que sea != de 3 el largo de la lista, el borde contenedor sera rojo
+		entry2.config(highlightcolor="red")
 
-	cbutton1.deselect()
-	button2.configure(state=DISABLED)
-	button2.update()
 
 
 def estadosFinales():
@@ -104,7 +116,7 @@ def verificaPalabra():
 			cuenta +=1
 			#text1.insert(INSERT,eA)
 		else:
-			text1.insert(INSERT,"- La palabra (" + testWord + ") no pertenece a este lenguaje.\n")
+			text1.insert(INSERT,"- La palabra (" + testWord + ")no pertenece a este lenguaje.\n")
 			break
 		if cuenta == len(testWord):
 			if listaestados[eA].final:
@@ -115,11 +127,9 @@ def verificaPalabra():
 				break
 
 
-
-
 #funciones interfaz grafica
 
-def activar(): #funcion asociada a los check button
+def activar(): #funcion asociada al check button
     if CheckVar1.get() == 1:
     	button2.configure(state=NORMAL)
     	button2.update()
